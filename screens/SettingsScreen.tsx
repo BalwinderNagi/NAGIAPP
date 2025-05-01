@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { SettingsScreenNavigationProp } from '../navigation/types';
 import GradientButton from '../components/GradientButton';
+import { useTheme } from '../context/ThemeContext';
 
 // Define prop types for the SettingItem component
 interface SettingItemProps {
@@ -18,9 +19,9 @@ interface SettingItemProps {
 
 const SettingsScreen = () => {
   const navigation = useNavigation<SettingsScreenNavigationProp>();
+  const { colors, isDarkMode, toggleTheme } = useTheme();
   
-  // State for toggle switches
-  const [darkMode, setDarkMode] = useState(false);
+  // State for toggle switches (except darkMode which now comes from ThemeContext)
   const [notifications, setNotifications] = useState(true);
   const [soundEffects, setSoundEffects] = useState(true);
   const [autoUpdate, setAutoUpdate] = useState(false);
@@ -36,16 +37,19 @@ const SettingsScreen = () => {
     onPress = () => {}
   }) => (
     <TouchableOpacity 
-      style={styles.settingItem}
+      style={[
+        styles.settingItem,
+        { borderBottomColor: colors.border }
+      ]}
       onPress={onPress}
       activeOpacity={showArrow ? 0.7 : 1}
     >
       <View style={styles.settingIconContainer}>
-        <Ionicons name={icon} size={22} color="#36D1DC" />
+        <Ionicons name={icon} size={22} color={colors.primary} />
       </View>
       
       <View style={styles.settingContent}>
-        <Text style={styles.settingTitle}>{title}</Text>
+        <Text style={[styles.settingTitle, { color: colors.text }]}>{title}</Text>
       </View>
       
       {hasToggle && (
@@ -53,7 +57,7 @@ const SettingsScreen = () => {
           value={toggleValue}
           onValueChange={onToggleChange}
           trackColor={{ false: '#ccc', true: '#bde2ff' }}
-          thumbColor={toggleValue ? '#36D1DC' : '#f4f3f4'}
+          thumbColor={toggleValue ? colors.primary : '#f4f3f4'}
           ios_backgroundColor="#ccc"
         />
       )}
@@ -65,23 +69,23 @@ const SettingsScreen = () => {
   );
   
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Appearance</Text>
-        <View style={styles.sectionContent}>
+        <Text style={[styles.sectionTitle, { color: colors.secondaryText }]}>Appearance</Text>
+        <View style={[styles.sectionContent, { backgroundColor: colors.card }]}>
           <SettingItem 
             title="Dark Mode" 
             icon="moon-outline" 
             hasToggle 
-            toggleValue={darkMode} 
-            onToggleChange={setDarkMode} 
+            toggleValue={isDarkMode} 
+            onToggleChange={toggleTheme} 
           />
         </View>
       </View>
       
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Preferences</Text>
-        <View style={styles.sectionContent}>
+        <Text style={[styles.sectionTitle, { color: colors.secondaryText }]}>Preferences</Text>
+        <View style={[styles.sectionContent, { backgroundColor: colors.card }]}>
           <SettingItem 
             title="Notifications" 
             icon="notifications-outline" 
@@ -107,8 +111,8 @@ const SettingsScreen = () => {
       </View>
       
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
-        <View style={styles.sectionContent}>
+        <Text style={[styles.sectionTitle, { color: colors.secondaryText }]}>Account</Text>
+        <View style={[styles.sectionContent, { backgroundColor: colors.card }]}>
           <SettingItem 
             title="Personal Information" 
             icon="person-outline" 
@@ -144,7 +148,6 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
   },
   section: {
     marginBottom: 24,
@@ -152,12 +155,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#999',
     marginLeft: 16,
     marginBottom: 8,
   },
   sectionContent: {
-    backgroundColor: 'white',
     borderRadius: 12,
     overflow: 'hidden',
     marginHorizontal: 16,
@@ -168,7 +169,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
   },
   settingIconContainer: {
     width: 30,
@@ -180,7 +180,6 @@ const styles = StyleSheet.create({
   },
   settingTitle: {
     fontSize: 16,
-    color: '#333',
   },
   buttonContainer: {
     marginHorizontal: 16,

@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ProfileScreenNavigationProp } from '../navigation/types';
 import GradientButton from '../components/GradientButton';
+import { useTheme } from '../context/ThemeContext';
 
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const { colors } = useTheme();
   
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
           <Image 
@@ -16,24 +18,27 @@ const ProfileScreen = () => {
             style={styles.avatar}
           />
         </View>
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.username}>@johndoe</Text>
+        <Text style={[styles.name, { color: colors.text }]}>John Doe</Text>
+        <Text style={[styles.username, { color: colors.secondaryText }]}>@johndoe</Text>
       </View>
       
-      <View style={styles.infoContainer}>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Email</Text>
-          <Text style={styles.infoValue}>john.doe@example.com</Text>
+      <View style={[styles.infoContainer, { 
+        backgroundColor: colors.card,
+        shadowColor: colors.text
+      }]}>
+        <View style={[styles.infoItem, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.infoLabel, { color: colors.secondaryText }]}>Email</Text>
+          <Text style={[styles.infoValue, { color: colors.text }]}>john.doe@example.com</Text>
         </View>
         
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Location</Text>
-          <Text style={styles.infoValue}>San Francisco, CA</Text>
+        <View style={[styles.infoItem, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.infoLabel, { color: colors.secondaryText }]}>Location</Text>
+          <Text style={[styles.infoValue, { color: colors.text }]}>San Francisco, CA</Text>
         </View>
         
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Member Since</Text>
-          <Text style={styles.infoValue}>January 2023</Text>
+        <View style={[styles.infoItem, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.infoLabel, { color: colors.secondaryText }]}>Member Since</Text>
+          <Text style={[styles.infoValue, { color: colors.text }]}>January 2023</Text>
         </View>
       </View>
       
@@ -51,7 +56,6 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
     padding: 20,
   },
   profileHeader: {
@@ -78,20 +82,16 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
   },
   username: {
     fontSize: 16,
-    color: '#666',
     marginTop: 4,
   },
   infoContainer: {
-    backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
     marginBottom: 20,
     elevation: 2,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -99,17 +99,14 @@ const styles = StyleSheet.create({
   infoItem: {
     marginBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
     paddingBottom: 16,
   },
   infoLabel: {
     fontSize: 14,
-    color: '#999',
     marginBottom: 4,
   },
   infoValue: {
     fontSize: 16,
-    color: '#333',
   },
   buttonContainer: {
     marginTop: 20,
